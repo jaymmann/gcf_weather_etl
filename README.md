@@ -4,7 +4,7 @@ This Cloud Function will respond to a new document in a GCP Storage bucket and w
 
 ## v1: Trigger the function when a file is loaded to GCS
 
-1. Create a Cloud Storage bucket (in the example below, my bucket is `sp24_elliott_41200_weather_dev`)
+1. Create a Cloud Storage bucket (in the example below, my bucket is `sp24_jaymmann_41200_weather_dev`)
 2. Create a new directory in Cloud Shell
 3. Initialize a new npm module
 4. `touch index.js .gitignore README.md`
@@ -17,7 +17,7 @@ gcloud functions deploy weather_etl \
 --runtime nodejs18 \
 --trigger-event google.storage.object.finalize \
 --entry-point readObservation \
---trigger-resource sp24_elliott_41200_weather_dev
+--trigger-resource sp24_jaymmann_41200_weather_dev
 ```
 
 ### Copying a File to the Cloud Storage Bucket
