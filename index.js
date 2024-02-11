@@ -1,39 +1,41 @@
-const {Storage} = require('@google-cloud/storage');
-const csv = require ('csv-parser');
+const { Storage } = require('@google-cloud/storage');
+const { BigQuery } = require('@google-cloud/bigquery');
+const csv = require('csv-parser');
+
+const bigquery = new BigQuery();
+const datasetId = 'cit-41200-scrapbook';
+const tableId = 'weather_data';
 
 exports.readObservation = (file, context) => {
-    // console.log(`  Event: ${context.eventId}`);
-    // console.log(`  Event Type: ${context.eventType}`);
-    // console.log(`  Bucket: ${file.bucket}`);
-    // console.log(`  File: ${file.name}`);
-
     const gcs = new Storage();
-
     const dateFile = gcs.bucket(file.bucket).file(file.name);
 
     dateFile.createReadStream()
-    .on('error', () => {
-        // Handle an error
-        console.error(error);
-    })
-    .pipe(csv())
-    .on('data', (row) => {
-        // Log row data
-        //console.log(row);
-        printDict(row)
-    })
-    .on('end', () => {
-        // Handle end of CSV
-        console.log('End!');
-    })
+        .on('error', (error) => {
+            console.error('Error reading CSV file:', error);
+        })
+        .pipe(csv())
+        .on('data', (row) => {
+            writeToBQ(row);
+        })
+        .on('end', () => {
+            console.log('End of CSV processing!');
+        });
 }
 
-// HELPER FUNCTIONS
+async function writeToBQ(row) {
+    const rows = [row];
 
-function printDict(row) {
-    for (let key in row) {
-        console.log(key + ' : ' + row[key]);
-        //console.log(`${key}  :  + ${row[key]}`);
+    try {
+        await bigquery
+            .dataset(datasetId)
+            .table(tableId)
+            .insert(rows);
 
+        rows.forEach(row => {
+            console.log(`Inserted: ${JSON.stringify(row)}`);
+        });
+    } catch (err) {
+        console.error(`Error: ${err}`);
     }
 }
