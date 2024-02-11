@@ -25,15 +25,15 @@ async function transformAndLoad(row, fileName) {
     // Transformation according to instructions
     const numericFields = ['airtemp', 'dewpoint', 'pressure', 'windspeed', 'precip1hour', 'precip6hour'];
     numericFields.forEach(field => {
-        if (row[field] === '-9999') {
-            row[field] = null; // Rewrite missing value as null
+        if (row[field] === '-999.0') {
+            row[field] = null; 
         } else {
             row[field] = parseFloat(row[field]) / 10; // Convert to decimal
         }
     });
 
     // Transform station identifier from file name
-    row['station'] = extractStationId(fileName); // Assuming 'file_name' is the key representing the file name
+    row['station'] = extractStationId(fileName); 
 
     // Log the transformed row
     console.log(row);
@@ -50,9 +50,9 @@ async function transformAndLoad(row, fileName) {
 function extractStationId(filename) {
     const parts = filename.split('-');
     if (parts.length > 1) {
-        return parts[0]; // Extracting the station id code
+        return parts[0]; 
     }
-    return null; // Return null if station id code not found or invalid format
+    return null; 
 }
 
 async function insertIntoBigQuery(row) {
