@@ -1,0 +1,2 @@
+station,year,month,day,hour,airtemp,dewpoint,pressure,winddirection,windspeed,sky,precip1hour,precip6hour
+,2021.0,1.0,19.0,6.0,-6.0,-33.0,10199.0,270.0,41.0,8.0,0.0,-9999.0
